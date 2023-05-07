@@ -4,11 +4,14 @@ import Modal from "react-bootstrap/Modal";
 import { Layout, Menu, theme, Input } from "antd";
 import logo from "../img/logo.png";
 import { useEffect, useState } from "react";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 const { Header } = Layout;
 let accountHasLogin = JSON.parse(localStorage.getItem("accountHasLogin"));
 const NavBar = () => {
+  //navigate
+  const navigate = useNavigate();
   //state
+
   const [userInput, setUserInput] = useState({
     name: "",
     email: "",
@@ -24,6 +27,9 @@ const NavBar = () => {
   const [check, setCheck] = useState(false);
   const [displayLogin, setDisplayLogin] = useState("inline-block");
   const [displayUserAccount, setDisplayUserAccount] = useState("none");
+  const [show, setShow] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
   // function
   useEffect(() => {
     const takeDataListUser = async () => {
@@ -37,15 +43,13 @@ const NavBar = () => {
       return;
     }
     if (accountHasLogin.length != 0) {
-      // handleClose();
       return accountHasLogin.name[0];
     }
   };
   const {
     token: { colorBgContainer },
   } = theme.useToken();
-  const [show, setShow] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
+
   const handleOpenRegister = () => {
     setShowRegister(true);
     setShow(false);
@@ -107,7 +111,6 @@ const NavBar = () => {
   };
   const handleSubmitRegister = (e) => {
     e.preventDefault();
-    // console.log("list user data -->", listUserData);
     const checkValidEmail = isValidEmail(userInput.email);
     const checkIsValueHasntUse = isEmailHasntUse(userInput.email);
     const checkIsPasswordTrue = isPasswordRefillTrue(userInput.password);
@@ -116,17 +119,14 @@ const NavBar = () => {
         name: userInput.name,
         email: userInput.email,
         password: userInput.password,
-        post: 0,
         id: listUserData.length + 1,
+        postSavedId: [],
       };
-      console.log("listuser-->", listUserData);
-      console.log("=====UserRegister====", userHasRegisted);
       alert("registed successful");
       postValueToDb(userHasRegisted);
       setCheck(!check);
     } else {
       alert("something wrong registed failed");
-      console.log("listuser-->", listUserData);
     }
   };
   const handleLogin = (e) => {
@@ -154,8 +154,8 @@ const NavBar = () => {
 
   useEffect(() => {
     const handleCheckLogin = () => {
-      if (!accountHasLogin || accountHasLogin.length == 0) {
-        accountHasLogin = [];
+      if (!accountHasLogin) {
+        accountHasLogin = "";
         localStorage.setItem(
           "accountHasLogin",
           JSON.stringify(accountHasLogin)
@@ -168,9 +168,29 @@ const NavBar = () => {
     };
     handleCheckLogin();
   }, [hasLogin]);
+  const handleLogOut = () => {
+    accountHasLogin = "";
+    localStorage.setItem("accountHasLogin", JSON.stringify(accountHasLogin));
+    setHasLogin(!hasLogin);
+    setDisplayLogin("block");
+    setDisplayUserAccount("none");
+    return;
+  };
+
+  const handleTakeInputSearch = (e) => {
+    console.log("this is input of search -->", e.target.value);
+    setSearchValue(e.target.value);
+  };
+
+  const handleEnter = (e) => {
+    if (e.key == "Enter") {
+      navigate(`/search`, { state: searchValue });
+    }
+  };
+
   return (
     <div style={{ paddingBottom: "20px" }}>
-      {!hasLogin && !hasLogin}
+      {!hasLogin && setHasLogin(!hasLogin)}
       <Layout
         style={{
           display: "flex",
@@ -228,29 +248,21 @@ const NavBar = () => {
                 color: "black",
                 height: "100%",
               }}
-              to="oke"
+              to="blogcreator"
             >
               <h6>Create Your Blog</h6>
             </Link>
-            <Link
+            <Input
+              placeholder="search"
               style={{
                 width: "60%",
-                color: "black",
                 height: "100%",
-                padding: "0",
-                margin: "0",
+                padding: "2vh",
+                borderRadius: "10px",
               }}
-            >
-              <Input
-                placeholder="search"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  padding: "2vh",
-                  borderRadius: "10px",
-                }}
-              />
-            </Link>
+              onChange={handleTakeInputSearch}
+              onKeyDown={handleEnter}
+            />
             <Button
               style={{
                 border: "none",
@@ -279,6 +291,9 @@ const NavBar = () => {
                   backgroundColor: "white",
                   color: "black",
                 }}
+                onClick={() => {
+                  navigate("yourAccount");
+                }}
               >
                 {renderAccount()}
               </Button>
@@ -299,11 +314,11 @@ const NavBar = () => {
                 }}
               >
                 <span
-                  style={{ lineHeight: "20px" }}
                   class="material-symbols-outlined"
-                  onClick={{}}
+                  style={{ lineHeight: "20px" }}
+                  onClick={handleLogOut}
                 >
-                  expand_more
+                  logout
                 </span>
               </Button>
             </div>
@@ -431,27 +446,6 @@ const NavBar = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-      {/* <div
-        className="card"
-        style={{
-          width: "18rem",
-          position: "sticky",
-          zIndex: 10000,
-          left: "90%",
-          bottom: "61%",
-        }}
-      >
-        <div className="card-body">
-          <h5 className="card-title">Card title</h5>
-          <p className="card-text">
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
-          </p>
-          <a href="#" className="btn btn-primary">
-            Go somewhere
-          </a>
-        </div>
-      </div> */}
     </div>
   );
 };

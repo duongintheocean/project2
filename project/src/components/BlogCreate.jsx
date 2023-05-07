@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { DownloadOutlined } from "@ant-design/icons";
+
 import { Button, Card } from "antd";
 import { Layout, Space } from "antd";
 import { useState } from "react";
 import "../css/blogcretor.css";
 import axios from "axios";
-let accountHasLogin = JSON.parse(localStorage.getItem("accountHasLogin"));
-const { Header, Footer, Sider, Content } = Layout;
+
+const { Header, Sider } = Layout;
 const headerStyle = {
   textAlign: "center",
   height: 64,
@@ -31,8 +31,9 @@ const siderStyle = {
 };
 
 export default function BlogCreate() {
+  // handle localStorage
+  let accountHasLogin = JSON.parse(localStorage.getItem("accountHasLogin"));
   //state
-
   const [valueImage, setValueImage] = useState();
   const [statusImg, setStatusImg] = useState("none");
   const [statusOfInput, setStatusInput] = useState("inline-block");
@@ -51,6 +52,17 @@ export default function BlogCreate() {
         await axios.post("http://localhost:8000/post", blog);
       };
       handlePostToApi();
+      const handlePatchToApi = async () => {
+        const newCreatedList = [...accountHasLogin.postCreatedId];
+        newCreatedList.push(blog.id);
+        const updateCreated = { postCreatedId: newCreatedList };
+        // updateCreated.push(blog.id);
+        await axios.patch(
+          `http://localhost:8000/users/${accountHasLogin.id}`,
+          updateCreated
+        );
+      };
+      handlePatchToApi();
     }
   }, [blog]);
 
@@ -60,7 +72,6 @@ export default function BlogCreate() {
   };
   const handleTakeImgValue = (value) => {
     const file = value.target.files[0];
-    console.log(value.target.value, "<--- value of input");
     const reader = new FileReader();
     reader.onload = (event) => {
       const base64String = event.target.result;
@@ -82,14 +93,14 @@ export default function BlogCreate() {
     setStatusInput("block");
   };
   const handlePost = (e) => {
-    console.log(e);
     e.preventDefault();
     if (accountHasLogin == null) {
       return alert("you need login for upload your post");
     }
-    if ((accountHasLogin.length = 0)) {
+    if (accountHasLogin == "") {
       return alert("you need login for upload your post");
     } else {
+      console.log(accountHasLogin, "<--- this is account has login");
       const newBlog = {
         ...valueInput,
         idAuthor: accountHasLogin.id,
@@ -107,7 +118,7 @@ export default function BlogCreate() {
         display: "flex",
         justifyContent: "center",
         marginTop: "-46px",
-        height: "100vh",
+        height: "800px",
         border: "none",
         objectFit: "fill",
       }}
@@ -116,7 +127,7 @@ export default function BlogCreate() {
         <Card
           style={{
             width: "60rem",
-            height: "90vh",
+            height: "700px",
             borderRadius: "3%",
             paddingTop: "10px",
             paddingLeft: "30px",
@@ -161,8 +172,8 @@ export default function BlogCreate() {
                   />
                   <img
                     src={valueImage}
-                    display={statusImg}
                     style={{
+                      display: statusImg,
                       width: "100%",
                       borderRadius: "5%",
                     }}
@@ -204,7 +215,7 @@ export default function BlogCreate() {
               >
                 <Header style={headerStyle}>
                   <textarea
-                    name="tiltle"
+                    name="title"
                     type="text"
                     style={{
                       width: "100%",
@@ -216,7 +227,7 @@ export default function BlogCreate() {
                       resize: "none",
                     }}
                     className="titleInput"
-                    placeholder="FILL TILTLE"
+                    placeholder="FILL TITLE"
                     onChange={handleTakeTextValue}
                   />
                   <p style={{ marginBottom: "50px", textAlign: "end" }}></p>

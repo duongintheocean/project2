@@ -6,7 +6,6 @@ export default function Home() {
   useEffect(() => {
     const handleTakeProductData = async () => {
       const newListProduct = await axios.get("http://localhost:8000/post");
-      console.log(newListProduct, "<--- this is list product");
       setListProduct(newListProduct.data);
     };
     handleTakeProductData();
