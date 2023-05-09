@@ -68,6 +68,7 @@ export default function Saved() {
           gridTemplateColumns: "auto auto auto ",
           marginTop: "20px",
           marginLeft: "80px",
+          rowGap: "20px",
         }}
       >
         {listBlogNeedRender.length != 0 &&

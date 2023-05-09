@@ -109,6 +109,11 @@ const NavBar = () => {
   const postValueToDb = async (user) => {
     await axios.post("http://localhost:8000/users", user);
   };
+  // const snackBar = (e) => {
+  //   setSnackBarStatus("show");
+  //   setSnackBarValue(e);
+  //   setTimeout(setSnackBarStatus(""), 0);
+  // };
   const handleSubmitRegister = (e) => {
     e.preventDefault();
     const checkValidEmail = isValidEmail(userInput.email);
@@ -124,6 +129,12 @@ const NavBar = () => {
       };
       alert("registed successful");
       postValueToDb(userHasRegisted);
+      setUserInput({
+        name: "",
+        email: "",
+        password: "",
+        refillPassword: "",
+      });
       setCheck(!check);
     } else {
       alert("something wrong registed failed");
@@ -388,6 +399,7 @@ const NavBar = () => {
                 type="email"
                 onChange={handleChangeInput}
                 placeholder="Enter email"
+                value={userInput.email}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -397,6 +409,7 @@ const NavBar = () => {
                 type="text"
                 placeholder="Enter your name"
                 onChange={handleChangeInput}
+                value={userInput.name}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -406,6 +419,7 @@ const NavBar = () => {
                 type="password"
                 placeholder="Password"
                 onChange={handleChangeInput}
+                value={userInput.password}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -415,6 +429,7 @@ const NavBar = () => {
                 type="password"
                 placeholder="refill password"
                 onChange={handleChangeInput}
+                value={userInput.refillPassword}
               />
             </Form.Group>
             <Form.Text className="text-muted">
@@ -446,6 +461,7 @@ const NavBar = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      {/* <div className={snackBarStatus}>{snackBarValue}</div> */}
     </div>
   );
 };

@@ -12,7 +12,7 @@ import Search from "./components/Search";
 import Another from "./components/Another";
 import AnotherSaved from "./components/AnotherSaved";
 import AnotherCreated from "./components/AnotherCreated";
-// import "./App.css";
+import "./App.css";
 export default function App() {
   return (
     <div>

@@ -52,6 +52,7 @@ export default function Created() {
           gridTemplateColumns: "auto auto auto ",
           marginTop: "20px",
           marginLeft: "80px",
+          rowGap: "20px",
         }}
       >
         {/* {console.log(listCreatedPostRender, "<--- this is created post")} */}

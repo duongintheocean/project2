@@ -44,6 +44,11 @@ export default function BlogCreate() {
   });
   const [blog, setBlog] = useState();
   //function
+  const handleDelete = () => {
+    setValueImage("");
+    setStatusImg("none");
+    setStatusInput("block");
+  };
   useEffect(() => {
     if (!valueInput.title && !valueInput.blogContent) {
       return;
@@ -63,6 +68,11 @@ export default function BlogCreate() {
         );
       };
       handlePatchToApi();
+      handleDelete();
+      setValueInput({
+        title: "",
+        blogContent: "",
+      });
     }
   }, [blog]);
 
@@ -87,11 +97,7 @@ export default function BlogCreate() {
       setStatusInput("none");
     }
   };
-  const handleDelete = () => {
-    setValueImage("");
-    setStatusImg("none");
-    setStatusInput("block");
-  };
+
   const handlePost = (e) => {
     e.preventDefault();
     if (accountHasLogin == null) {
@@ -100,13 +106,14 @@ export default function BlogCreate() {
     if (accountHasLogin == "") {
       return alert("you need login for upload your post");
     } else {
-      console.log(accountHasLogin, "<--- this is account has login");
+      // console.log(accountHasLogin, "<--- this is account has login");
       const newBlog = {
         ...valueInput,
         idAuthor: accountHasLogin.id,
         image: valueImage,
       };
       setBlog(newBlog);
+      alert("post successfull");
     }
   };
 
@@ -226,6 +233,7 @@ export default function BlogCreate() {
                       fontSize: "35px",
                       resize: "none",
                     }}
+                    value={valueInput.title}
                     className="titleInput"
                     placeholder="FILL TITLE"
                     onChange={handleTakeTextValue}
@@ -249,6 +257,7 @@ export default function BlogCreate() {
                       overflow: " hidden",
                     }}
                     onChange={handleTakeTextValue}
+                    value={valueInput.blogContent}
                   ></textarea>
                 </Header>
               </Layout>

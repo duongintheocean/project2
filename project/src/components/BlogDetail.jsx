@@ -50,7 +50,6 @@ export default function BlogDetail() {
     }
   };
   const handleTakeInput = (e) => {
-    console.log(e.target.value);
     setValueComment(e.target.value);
   };
   const handleRenderComment = () => {
@@ -72,18 +71,21 @@ export default function BlogDetail() {
     setListCommentNeedRender(newlistCommentNeedRender);
   };
   const handSubmitComment = async (e) => {
-    console.log(e.key, "<--- this is value when i click enter");
     if (e.key == "Enter") {
-      console.log(e.key);
-      const newComment = {
-        comment: valueComment,
-        idBlogOfComment: blogData.id,
-        idCommenter: accountHasLogin.id,
-      };
-      console.log(newComment, "<--- this is new comment");
-      setCheckComment(!checkComment);
-      await axios.post("http://localhost:8000/comment", newComment);
+      if (accountHasLogin != null) {
+        console.log(e.key);
+        const newComment = {
+          comment: valueComment,
+          idBlogOfComment: blogData.id,
+          idCommenter: accountHasLogin.id,
+        };
+        setCheckComment(!checkComment);
+        await axios.post("http://localhost:8000/comment", newComment);
+      } else {
+        alert("you need login to comment");
+      }
     }
+    setValueComment("");
   };
   const handleSavePost = async (event) => {
     event.stopPropagation();

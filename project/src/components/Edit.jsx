@@ -59,6 +59,10 @@ export default function Edit() {
       `http://localhost:8000/post/${location.state.id}`,
       newBlog
     );
+    handleDelete();
+    setValueTitle("");
+    setValueBlogContent("");
+    alert("edit successfull");
   };
   return (
     <div
